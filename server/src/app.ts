@@ -5,6 +5,11 @@ import { corsOptions } from "./config/cors";
 import path from "path";
 import { AUTH_PATH_BASE, RoutesNames } from "./lib/constants";
 import { authRouter } from "./auth/auth-routes";
+import { userRouter } from "./users/user-routes";
+import { verifyJWT } from "./middleware/verify-jwt";
+import { allowedRoles } from "./middleware/allowed-roles";
+import { Role } from "@prisma/client";
+import { expenseCategoriesRouter } from "./expenses/expense-categories/expense-categories-routes";
 
 export const app = express();
 
@@ -23,8 +28,16 @@ app.use(cookieParser());
 //serve static files
 app.use("/", express.static(path.join(__dirname, "/public")));
 
-console.log(RoutesNames.auth.root)
 app.use(RoutesNames.auth.root, authRouter);
+
+// Rutas protegidas
+app.use(verifyJWT);
+app.use(
+  RoutesNames.user.root,
+  allowedRoles([Role.ADMIN, Role.USER]),
+  userRouter
+);
+app.use(RoutesNames.expenseCategory.root, expenseCategoriesRouter);
 
 app.get("", (req, res) => {
   res.send("Hello app");

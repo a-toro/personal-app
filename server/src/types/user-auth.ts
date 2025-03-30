@@ -1,6 +1,6 @@
 import { User } from "@prisma/client";
 export interface UserAuth
-  extends Omit<User, "createAt" | "updateAt" | "password"> {
+  extends Omit<User, "createAt" | "updateAt" | "password" | "accessToken"> {
   [key: string]: any;
 }
 

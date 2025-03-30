@@ -6,7 +6,8 @@ export function createAccessToken({
   ...payload
 }: Omit<JwtPayload, "iat" | "exp">) {
   const token = jwt.sign(payload, EnvConfig.jwtAccessToken, {
-    expiresIn: "30s",
+    // expiresIn: "30s",
+    expiresIn: "1h",
   });
 
   return token;
@@ -21,8 +22,13 @@ export function createRefreshToken({
   return token;
 }
 
-export function verifyAccessToken(token: string): JwtPayload {
-  return jwt.verify(token, EnvConfig.jwtAccessToken) as JwtPayload;
+export function verifyAccessToken(token: string): JwtPayload | null {
+  try {
+    return jwt.verify(token, EnvConfig.jwtAccessToken) as JwtPayload;
+  } catch (error) {
+    console.log({ error });
+    return null;
+  }
 }
 
 export function verifyRefreshToken(token: string): JwtPayload | null {

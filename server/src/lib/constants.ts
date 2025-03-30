@@ -1,5 +1,7 @@
 import { EnvConfig } from "./env";
 
+export const JWT_SCHEMA = "Bearer";
+
 export enum CookiesNames {
   AccessToken = "access_token",
   RefreshToken = "refresh_token",
@@ -22,5 +24,13 @@ export const RoutesNames = {
     register: `/register`,
     refresh: `/refresh`,
     logout: `/logout`,
+  },
+  user: {
+    root: `${BASE_API}`,
+    users: "/users",
+  },
+  expenseCategory: {
+    root: `${BASE_API}`,
+    categories: "/expense-category",
   },
 };
