@@ -35,7 +35,7 @@ app.use(RoutesNames.auth.root, authRouter);
 app.use(verifyJWT);
 app.use(
   RoutesNames.user.root,
-  allowedRoles([Role.ADMIN, Role.USER]),
+  allowedRoles([Role.ADMIN]),
   userRouter
 );
 app.use(RoutesNames.expenseCategory.root, expenseCategoriesRouter);
