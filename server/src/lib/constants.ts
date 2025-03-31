@@ -33,4 +33,8 @@ export const RoutesNames = {
     root: `${BASE_API}`,
     categories: "/expense-category",
   },
+  expense: {
+    root: `${BASE_API}`,
+    expenses: "/expenses",
+  },
 };

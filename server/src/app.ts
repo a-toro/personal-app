@@ -10,6 +10,7 @@ import { verifyJWT } from "./middleware/verify-jwt";
 import { allowedRoles } from "./middleware/allowed-roles";
 import { Role } from "@prisma/client";
 import { expenseCategoriesRouter } from "./expenses/expense-categories/expense-categories-routes";
+import { expenseRouter } from "./expenses/expense-routes";
 
 export const app = express();
 
@@ -38,6 +39,7 @@ app.use(
   userRouter
 );
 app.use(RoutesNames.expenseCategory.root, expenseCategoriesRouter);
+app.use(RoutesNames.expense.root, expenseRouter);
 
 app.get("", (req, res) => {
   res.send("Hello app");
