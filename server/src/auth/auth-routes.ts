@@ -73,8 +73,15 @@ authRouter.post(
         .status(200)
         .cookie(CookiesNames.RefreshToken, refreshToken, {
           httpOnly: true,
-          secure: String(EnvConfig.enviroment).toLowerCase() === "production",
-          sameSite: "strict",
+          secure:
+            String(EnvConfig.enviroment).toLowerCase() === "production"
+              ? true
+              : false,
+          sameSite:
+            String(EnvConfig.enviroment).toLowerCase() === "production"
+              ? "none"
+              : "lax",
+          path: "/",
           maxAge: 1000 * 60 * 60, // Tiempo de validez de la cookie 1h
         })
         .json({
@@ -165,20 +172,23 @@ authRouter.post(
 
 authRouter.get(
   RoutesNames.auth.logout,
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     try {
       const cookies = req.cookies;
 
       if (!cookies?.[CookiesNames.RefreshToken]) res.sendStatus(204);
 
       // Limpiar cookie
-      res.clearCookie(CookiesNames.RefreshToken, {
-        httpOnly: true,
-        sameSite: "strict",
-        secure: String(EnvConfig.enviroment).toLowerCase() === "production",
-      });
+      return res
+        .clearCookie(CookiesNames.RefreshToken, {
+          httpOnly: true,
+          sameSite: "none",
+          path: "/",
+          secure: String(EnvConfig.enviroment).toLowerCase() === "production",
+        })
+        .sendStatus(204);
 
-      res.sendStatus(204);
+      // res.sendStatus(204);
     } catch (error) {
       next(error);
     }
@@ -213,6 +223,47 @@ authRouter.get(
       });
 
       res.status(200).json({
+        accessToken,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+authRouter.get(
+  RoutesNames.auth.session,
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    try {
+      const cookies = req.cookies;
+
+      if (!cookies?.[CookiesNames.RefreshToken]) return res.sendStatus(401);
+
+      const refreshToken = cookies[CookiesNames.RefreshToken];
+
+      const decodedUser = verifyRefreshToken(refreshToken);
+
+      if (!decodedUser) return res.sendStatus(403);
+
+      const findUser = await prisma.user.findUnique({
+        where: {
+          email: decodedUser!.email,
+        },
+      });
+
+      if (!findUser) return res.sendStatus(403);
+
+      const accessToken = createAccessToken({
+        id: String(findUser!.id),
+        email: findUser!.email,
+      });
+
+      return res.status(200).json({
+        user: {
+          id: findUser?.id,
+          email: findUser?.email,
+          role: findUser?.role,
+        },
         accessToken,
       });
     } catch (error) {
