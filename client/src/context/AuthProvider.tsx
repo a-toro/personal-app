@@ -21,11 +21,13 @@ interface AuthState {
 interface AuthContextType {
   auth: AuthState;
   setAuth: Dispatch<SetStateAction<AuthState>>;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const SESSION_PATH = "/auth/session";
+const LOGOUT_PATH = "/auth/logout";
 
 export function AuthProvider({ children }: { readonly children: ReactNode }) {
   const [auth, setAuth] = useState<AuthState>({});
@@ -80,12 +82,29 @@ export function AuthProvider({ children }: { readonly children: ReactNode }) {
         setLoading(false);
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (loading) return <div className="w-screen h-screen flex justify-center items-center bg-slate-300 opacity-75 z-40 text-black">Cargando...</div>;
+  const logout = async function () {
+    try {
+      const response = await axios.get(LOGOUT_PATH, { withCredentials: true });
+      console.log({ logout: response });
+    } catch (error) {
+      console.log({ error });
+    } finally {
+      setAuth({});
+    }
+  };
+
+  if (loading)
+    return (
+      <div className="w-screen h-screen flex justify-center items-center bg-slate-300 opacity-75 z-40 text-black">
+        Cargando...
+      </div>
+    );
 
   return (
-    <AuthContext.Provider value={{ auth, setAuth }}>
+    <AuthContext.Provider value={{ auth, setAuth, logout }}>
       {children}
     </AuthContext.Provider>
   );
