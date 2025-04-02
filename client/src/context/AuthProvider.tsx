@@ -1,12 +1,28 @@
-import { createContext, ReactNode, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useState,
+} from "react";
 
-const AuthContext = createContext({});
+interface AuthState {
+  user?: {
+    id: string;
+    email: string;
+    role: string;
+  };
+  accessToken?: string;
+}
 
-export default function AuthProvider({
-  children,
-}: {
-  readonly children: ReactNode;
-}) {
+interface AuthContextType {
+  auth: AuthState;
+  setAuth: Dispatch<SetStateAction<AuthState>>;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export function AuthProvider({ children }: { readonly children: ReactNode }) {
   const [auth, setAuth] = useState({});
 
   return (
@@ -15,3 +31,5 @@ export default function AuthProvider({
     </AuthContext.Provider>
   );
 }
+
+export default AuthContext;
