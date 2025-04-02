@@ -14,19 +14,71 @@ import { useFormik } from "formik";
 // import * as Yup from "yup";
 
 import { Eye, EyeOff } from "lucide-react";
+import axios from "@/api/axios";
+import { useLocation, useNavigate } from "react-router";
+import { useAuth } from "@/hooks/useAuth";
+
+const REGISTER_PATH = "/auth/register";
+const LOGIN_PATH = "/auth/login";
 
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { setAuth } = useAuth();
+
   const formik = useFormik({
     initialValues: {
+      name: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
     // validationSchema: {},
-    onSubmit: (values) => {
-      console.log({ values });
+    onSubmit: async (values) => {
+      try {
+        const createUser = {
+          name: values.name,
+          email: values.email,
+          password: values.password,
+        };
+        const response = await axios.post(REGISTER_PATH, createUser);
+
+        if (response.status === 201) {
+          const loginUser = {
+            email: values.email,
+            password: values.password,
+          };
+          const loginResponse = await axios.post(LOGIN_PATH, loginUser, {
+            withCredentials: true,
+          });
+
+          if (loginResponse.status === 200) {
+            const {
+              email: userEmail,
+              id: userId,
+              role,
+            } = loginResponse.data?.data || {};
+
+            const accessToken = loginResponse.data?.accessToken;
+
+            setAuth({
+              user: { email: userEmail, id: userId, role },
+              accessToken,
+            });
+
+            navigate("/", { state: { from: location }, replace: true });
+          }
+
+          console.log({ loginResponse });
+        }
+        alert("Usuario no creado");
+      } catch (error) {
+        console.error(error);
+      }
     },
   });
   return (
@@ -39,6 +91,18 @@ export default function RegisterForm() {
       </CardHeader>
       <CardContent>
         <form className="flex flex-col gap-y-3" onSubmit={formik.handleSubmit}>
+          <div className="w-full space-y-2">
+            <Label htmlFor="name">Nombre</Label>
+            <Input
+              placeholder="Ingresa tu nombre completo"
+              id="name"
+              name="name"
+              type="text"
+              required
+              value={formik.values.name}
+              onChange={formik.handleChange}
+            />
+          </div>
           <div className="w-full space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
