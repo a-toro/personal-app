@@ -77,6 +77,7 @@ authRouter.post(
             String(EnvConfig.enviroment).toLowerCase() === "production"
               ? true
               : false,
+          // sameSite: "none",
           sameSite:
             String(EnvConfig.enviroment).toLowerCase() === "production"
               ? "none"
@@ -176,17 +177,33 @@ authRouter.get(
     try {
       const cookies = req.cookies;
 
-      if (!cookies?.[CookiesNames.RefreshToken]) res.sendStatus(204);
+      if (!cookies?.[CookiesNames.RefreshToken]) return res.sendStatus(204);
 
       // Limpiar cookie
-      return res
-        .clearCookie(CookiesNames.RefreshToken, {
-          httpOnly: true,
-          sameSite: "none",
-          path: "/",
-          secure: String(EnvConfig.enviroment).toLowerCase() === "production",
-        })
-        .sendStatus(204);
+      // res.clearCookie(CookiesNames.RefreshToken, {
+      //   httpOnly: true,
+      //   sameSite: "none",
+      //   path: "/",
+      //   secure: String(EnvConfig.enviroment).toLowerCase() === "production",
+      //   maxAge: 0,
+      // });
+
+      res.cookie(CookiesNames.RefreshToken, "", {
+        httpOnly: true,
+        secure:
+          String(EnvConfig.enviroment).toLowerCase() === "production"
+            ? true
+            : false,
+        // sameSite: "none",
+        sameSite:
+          String(EnvConfig.enviroment).toLowerCase() === "production"
+            ? "none"
+            : "lax",
+        path: "/",
+        maxAge: 0, // Tiempo de validez de la cookie 1h
+      });
+
+      return res.sendStatus(204);
 
       // res.sendStatus(204);
     } catch (error) {
