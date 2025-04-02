@@ -96,7 +96,7 @@ authRouter.post(
     req: Request<{}, {}, CreateUserDto>,
     res: Response,
     next: NextFunction
-  ) => {
+  ): Promise<any> => {
     try {
       const { success, error, data } = createUserSchema.safeParse(req.body);
 
@@ -105,7 +105,7 @@ authRouter.post(
           path: issue.path.join("."),
           message: issue.message,
         }));
-        res.status(400).json({
+        return res.status(400).json({
           data: null,
           errors,
           statusCode: 400,
@@ -145,6 +145,7 @@ authRouter.post(
           email: true,
           status: true,
           password: false,
+          role: true,
         },
       });
 
