@@ -24,6 +24,7 @@ export const RoutesNames = {
     register: `/register`,
     refresh: `/refresh`,
     logout: `/logout`,
+    session: `/session`,
   },
   user: {
     root: `${BASE_API}`,
