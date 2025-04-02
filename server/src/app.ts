@@ -11,8 +11,13 @@ import { allowedRoles } from "./middleware/allowed-roles";
 import { Role } from "@prisma/client";
 import { expenseCategoriesRouter } from "./expenses/expense-categories/expense-categories-routes";
 import { expenseRouter } from "./expenses/expense-routes";
+import { credentials } from "./middleware/credentials";
 
 export const app = express();
+
+// Handle options credentials check - before CORS!
+// and fetch cookies credentials requirement
+app.use(credentials);
 
 // Cross Origin Resource Sharing
 app.use(cors(corsOptions));
@@ -33,11 +38,7 @@ app.use(RoutesNames.auth.root, authRouter);
 
 // Rutas protegidas
 app.use(verifyJWT);
-app.use(
-  RoutesNames.user.root,
-  allowedRoles([Role.ADMIN]),
-  userRouter
-);
+app.use(RoutesNames.user.root, allowedRoles([Role.ADMIN]), userRouter);
 app.use(RoutesNames.expenseCategory.root, expenseCategoriesRouter);
 app.use(RoutesNames.expense.root, expenseRouter);
 
