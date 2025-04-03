@@ -21,6 +21,7 @@ export default function AppRoutes() {
         >
           <Route path="/" index element={<h1>Home</h1>}></Route>
         </Route>
+        <Route path="*" element={<h1 className="text-2xl font-semibold">Not found page</h1>} />
       </Route>
     </Routes>
   );
