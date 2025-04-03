@@ -17,6 +17,7 @@ import { Eye, EyeOff } from "lucide-react";
 import axios from "@/api/axios";
 import { useLocation, useNavigate } from "react-router";
 import { useAuth } from "@/hooks/useAuth";
+import { useSnackbar } from "notistack";
 
 const LOGIN_PATH = "/auth/login";
 
@@ -27,6 +28,8 @@ export function LoginForm() {
   const location = useLocation();
 
   const { setAuth } = useAuth();
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const formik = useFormik({
     initialValues: {
@@ -49,14 +52,17 @@ export function LoginForm() {
             email: userEmail,
             id: userId,
             role,
+            name: userName,
           } = loginResponse.data?.data || {};
 
           const accessToken = loginResponse.data?.accessToken;
 
           setAuth({
-            user: { email: userEmail, id: userId, role },
+            user: { email: userEmail, id: userId, role, name: userName },
             accessToken,
           });
+
+          enqueueSnackbar(`Bienvenido ${userName}`);
 
           navigate("/", { state: { from: location }, replace: true });
         }
