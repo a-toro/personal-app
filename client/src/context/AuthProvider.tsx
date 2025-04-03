@@ -1,15 +1,18 @@
 import axios from "@/api/axios";
+import Loading from "@/components/Loading";
+import { useValidateSession } from "@/hooks/useValidateSession";
 import {
   createContext,
   Dispatch,
   ReactNode,
   SetStateAction,
-  useEffect,
+  useMemo,
+  // useEffect,
   useState,
 } from "react";
-import { useLocation, useNavigate } from "react-router";
+// import { useLocation, useNavigate } from "react-router";
 
-interface AuthState {
+export interface AuthState {
   user?: {
     id: string;
     name: string;
@@ -20,72 +23,21 @@ interface AuthState {
 }
 
 interface AuthContextType {
-  auth: AuthState;
-  setAuth: Dispatch<SetStateAction<AuthState>>;
+  auth: AuthState | null;
+  setAuth: Dispatch<SetStateAction<AuthState | null>>;
   logout: () => void;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const SESSION_PATH = "/auth/session";
+// const SESSION_PATH = "/auth/session";
 const LOGOUT_PATH = "/auth/logout";
 
 export function AuthProvider({ children }: { readonly children: ReactNode }) {
-  const [auth, setAuth] = useState<AuthState>({});
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [auth, setAuth] = useState<AuthState | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const session = await axios.get(SESSION_PATH, {
-          withCredentials: true,
-        });
-        if (session.status === 200) {
-          const { user, accessToken } = session.data || {};
-          if (user && accessToken) {
-            setAuth({
-              user: {
-                id: user?.id,
-                email: user?.email,
-                role: user?.role,
-                name: user?.name,
-              },
-              accessToken,
-            });
-
-            if (location.pathname === "/auth") {
-              navigate("/", { replace: true }); // Usa replace: true
-            }
-          } else if (location.pathname !== "/auth") {
-            // Si no hay usuario ni token, redirige a /auth
-            navigate("/auth", {
-              state: { from: location },
-              replace: true,
-            });
-          }
-        } else {
-          navigate("/auth", {
-            state: { from: location },
-            replace: true,
-          });
-        }
-      } catch (error) {
-        console.log(error);
-        // En caso de error, asegúrate de que estén en la página de autenticación
-        if (location.pathname !== "/auth") {
-          navigate("/auth", {
-            state: { from: location },
-            replace: true,
-          });
-        }
-      } finally {
-        setLoading(false);
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { loading } = useValidateSession(setAuth);
 
   const logout = async function () {
     try {
@@ -98,17 +50,21 @@ export function AuthProvider({ children }: { readonly children: ReactNode }) {
     }
   };
 
-  if (loading)
-    return (
-      <div className="w-screen h-screen flex justify-center items-center bg-slate-300 opacity-75 z-40 text-black">
-        Cargando...
-      </div>
-    );
+  const authValue = useMemo(
+    () => ({
+      auth,
+      setAuth,
+      logout,
+      loading,
+    }),
+    [auth, loading]
+  );
+
+  if (loading) return <Loading />;
 
   return (
-    <AuthContext.Provider value={{ auth, setAuth, logout }}>
-      {children}
-    </AuthContext.Provider>
+    // <AuthContext.Provider value={{ auth, setAuth, logout, loading }}>
+    <AuthContext.Provider value={authValue}>{children}</AuthContext.Provider>
   );
 }
 
