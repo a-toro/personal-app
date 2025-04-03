@@ -21,37 +21,38 @@ import {
 import LogoutButton from "./auth/LogoutButton";
 import { useAuth } from "@/hooks/useAuth";
 import { ROLES } from "@/lib/constants";
+import { ClientPaths } from "@/lib/routerPaths";
 
 // Menu items.
 const items = [
   {
     title: "Inicio",
-    url: "#",
+    url: ClientPaths.home,
     icon: Home,
   },
   {
     title: "Gastos",
-    url: "#",
+    url: ClientPaths.expenses,
     icon: Wallet,
   },
   {
     title: "Categorias gastos",
-    url: "#",
+    url: ClientPaths.expenseCategory,
     icon: () => <BanknoteArrowDown color="#f50000" />,
   },
   {
     title: "Ingresos",
-    url: "#",
+    url: ClientPaths.incomes,
     icon: HandCoins,
   },
   {
     title: "Categorias ingresos",
-    url: "#",
+    url: ClientPaths.incomesCategory,
     icon: () => <BanknoteArrowDown color="#0b5b18" />,
   },
   {
     title: "Configuración",
-    url: "#",
+    url: ClientPaths.settings,
     icon: () => <Settings color="#0b5b18" />,
   },
 ];
