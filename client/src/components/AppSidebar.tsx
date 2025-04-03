@@ -4,6 +4,7 @@ import {
   Wallet,
   BanknoteArrowDown,
   HandCoins,
+  Users,
 } from "lucide-react";
 
 import {
@@ -18,6 +19,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import LogoutButton from "./auth/LogoutButton";
+import { useAuth } from "@/hooks/useAuth";
+import { ROLES } from "@/lib/constants";
 
 // Menu items.
 const items = [
@@ -54,6 +57,7 @@ const items = [
 ];
 
 export function AppSidebar() {
+  const { auth } = useAuth();
   return (
     <Sidebar variant="inset" collapsible="offcanvas">
       <SidebarContent>
@@ -74,6 +78,23 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        {auth?.user?.role?.includes(ROLES.Admin) && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Admin</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem key={"users"}>
+                  <SidebarMenuButton asChild>
+                    <a href={"#"}>
+                      <Users />
+                      <span>Usuarios</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
