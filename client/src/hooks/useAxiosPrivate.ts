@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useAuth } from "./useAuth";
 import { useRefreshToken } from "./useRefreshToken";
 import { axiosPrivate } from "@/api/axios";
-import { JWT_SCHEMA } from "@/util/constants";
+import { JWT_SCHEMA } from "@/lib/constants";
 
 export const useAxiosPrivate = function () {
   const refresh = useRefreshToken();
