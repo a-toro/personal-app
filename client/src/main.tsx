@@ -7,11 +7,12 @@ import { AuthProvider } from "./context/AuthProvider.tsx";
 import { closeSnackbar, SnackbarProvider } from "notistack";
 import { Button } from "./components/ui/button.tsx";
 import { X } from "lucide-react";
+import Loading from "./components/Loading.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <Suspense fallback={<div>Cargando...</div>}>
+      <Suspense fallback={<Loading />}>
         <SnackbarProvider
           autoHideDuration={5000}
           maxSnack={5}
