@@ -12,6 +12,7 @@ import { useLocation, useNavigate } from "react-router";
 interface AuthState {
   user?: {
     id: string;
+    name: string;
     email: string;
     role: string;
   };
@@ -49,6 +50,7 @@ export function AuthProvider({ children }: { readonly children: ReactNode }) {
                 id: user?.id,
                 email: user?.email,
                 role: user?.role,
+                name: user?.name,
               },
               accessToken,
             });
