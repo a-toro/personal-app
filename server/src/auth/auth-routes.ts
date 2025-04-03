@@ -278,6 +278,7 @@ authRouter.get(
       return res.status(200).json({
         user: {
           id: findUser?.id,
+          name: findUser.name,
           email: findUser?.email,
           role: findUser?.role,
         },
