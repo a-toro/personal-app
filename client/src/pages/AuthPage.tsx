@@ -1,3 +1,4 @@
+import { LoginForm } from "@/components/auth/LoginForm";
 import RegisterForm from "@/components/auth/RegisterForm";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TabsContent } from "@radix-ui/react-tabs";
@@ -14,7 +15,7 @@ export default function AuthPage() {
           <RegisterForm />
         </TabsContent>
         <TabsContent value="login">
-          <h1>Login</h1>
+          <LoginForm />
         </TabsContent>
       </Tabs>
     </div>
