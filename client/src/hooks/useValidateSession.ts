@@ -2,6 +2,7 @@ import axios from "@/api/axios";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { AuthState } from "@/context/AuthProvider";
+import { ClientPaths } from "@/lib/routerPaths";
 
 const SESSION_PATH = "/auth/session";
 
@@ -31,19 +32,19 @@ export function useValidateSession(setAuth: (auth: AuthState | null) => void) {
               accessToken,
             });
 
-            if (location.pathname === "/auth") {
-              navigate("/", { replace: true }); // Usa replace: true
+            if (location.pathname === ClientPaths.auth) {
+              navigate(ClientPaths.home, { replace: true }); // Usa replace: true
             }
-          } else if (location.pathname !== "/auth") {
+          } else if (location.pathname !== ClientPaths.auth) {
             // Si no hay usuario ni token, redirige a /auth
-            navigate("/auth", {
+            navigate(ClientPaths.auth, {
               state: { from: location },
               replace: true,
             });
           }
         } else {
           setAuth(null);
-          navigate("/auth", {
+          navigate(ClientPaths.auth, {
             state: { from: location },
             replace: true,
           });
@@ -51,8 +52,8 @@ export function useValidateSession(setAuth: (auth: AuthState | null) => void) {
       } catch (error) {
         console.log(error);
         // En caso de error, asegúrate de que estén en la página de autenticación
-        if (location.pathname !== "/auth") {
-          navigate("/auth", {
+        if (location.pathname !== ClientPaths.auth) {
+          navigate(ClientPaths.auth, {
             state: { from: location },
             replace: true,
           });
