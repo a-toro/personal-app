@@ -1,6 +1,7 @@
 import axios from "@/api/axios";
 import Loading from "@/components/Loading";
 import { useValidateSession } from "@/hooks/useValidateSession";
+import { ClientPaths } from "@/lib/routerPaths";
 import {
   createContext,
   Dispatch,
@@ -10,6 +11,7 @@ import {
   // useEffect,
   useState,
 } from "react";
+import { useLocation, useNavigate } from "react-router";
 // import { useLocation, useNavigate } from "react-router";
 
 export interface AuthState {
@@ -36,12 +38,16 @@ const LOGOUT_PATH = "/auth/logout";
 
 export function AuthProvider({ children }: { readonly children: ReactNode }) {
   const [auth, setAuth] = useState<AuthState | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const { loading } = useValidateSession(setAuth);
 
   const logout = async function () {
     try {
       const response = await axios.get(LOGOUT_PATH, { withCredentials: true });
+      navigate(ClientPaths.auth, { state: { from: location }, replace: true });
+
       console.log({ logout: response });
     } catch (error) {
       console.log({ error });
