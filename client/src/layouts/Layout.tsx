@@ -10,8 +10,8 @@ export default function MainLayout() {
         <div className="flex flex-row flex-1">
           <AppSidebar />
           <SidebarTrigger />
-          <div className="w-full">
-            <main className="p-1">
+          <div className="w-full flex">
+            <main className="p-1 flex flex-col flex-1">
               <Outlet />
             </main>
           </div>
