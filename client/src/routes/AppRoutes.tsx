@@ -2,15 +2,11 @@
 import { Route, Routes } from "react-router";
 import RequiereAuth from "./RequiereAuth";
 import { lazy } from "react";
+import { ROLES } from "@/lib/constants";
 // import MainLayout from "@/layouts/Layout";
 
 const AuthPage = lazy(() => import("@/pages/AuthPage"));
 const MainLayout = lazy(() => import("@/layouts/Layout"));
-
-const ROLES = {
-  Admin: "ADMIN",
-  User: "USER",
-};
 
 export default function AppRoutes() {
   return (
