@@ -22,6 +22,7 @@ import LogoutButton from "./auth/LogoutButton";
 import { useAuth } from "@/hooks/useAuth";
 import { ROLES } from "@/lib/constants";
 import { ClientPaths } from "@/lib/routerPaths";
+import { Link } from "react-router";
 
 // Menu items.
 const items = [
@@ -69,10 +70,14 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link to={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
+                    {/* <a href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </a> */}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
