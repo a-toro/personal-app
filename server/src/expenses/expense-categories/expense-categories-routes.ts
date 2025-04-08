@@ -116,19 +116,18 @@ export async function createExpenseCategory(
   try {
     const user = req.user;
 
-    if (!user) return res.send(403);
+    if (!user) return res.sendStatus(403);
 
     const { name } = req.body;
 
-    if (!name)
-      return res.sendStatus(400).json({ message: "Name es obligatorio" });
+    if (!name) return res.status(400).json({ message: "Name es obligatorio" });
 
     const findCategory = await prisma.expenseCategory.findFirst({
       where: { name: name, userId: user.id },
     });
 
     if (findCategory)
-      return res.sendStatus(400).json({ message: "Categoria no disponible" });
+      return res.status(400).json({ message: "Categoria no disponible" });
 
     const newCategory = await prisma.expenseCategory.create({
       data: {
@@ -137,7 +136,7 @@ export async function createExpenseCategory(
       },
     });
 
-    res.sendStatus(201).json({
+    return res.status(201).json({
       data: {
         category: newCategory,
       },
