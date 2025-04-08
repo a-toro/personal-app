@@ -16,4 +16,5 @@ export const ApiPaths = {
     session: "/session",
     refresh: "/refresh",
   },
+  expenseCategory: "/expense-category",
 };
