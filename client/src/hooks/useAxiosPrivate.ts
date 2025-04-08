@@ -44,4 +44,6 @@ export const useAxiosPrivate = function () {
       axiosPrivate.interceptors.response.eject(responseIntercept);
     };
   }, [refresh, auth]);
+
+  return axiosPrivate;
 };
