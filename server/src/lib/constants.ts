@@ -27,15 +27,15 @@ export const RoutesNames = {
     session: `/session`,
   },
   user: {
-    root: `${BASE_API}`,
-    users: "/users",
+    root: `${BASE_API}/users`,
+    users: "",
   },
   expenseCategory: {
-    root: `${BASE_API}`,
-    categories: "/expense-category",
+    root: `${BASE_API}/expense-category`,
+    categories: "",
   },
   expense: {
-    root: `${BASE_API}`,
-    expenses: "/expenses",
+    root: `${BASE_API}/expenses`,
+    expenses: "",
   },
 };
