@@ -6,8 +6,8 @@ export function createAccessToken({
   ...payload
 }: Omit<JwtPayload, "iat" | "exp">) {
   const token = jwt.sign(payload, EnvConfig.jwtAccessToken, {
-    // expiresIn: "30s",
-    expiresIn: "1h",
+    expiresIn: "30s",
+    // expiresIn: "1h",
   });
 
   return token;
