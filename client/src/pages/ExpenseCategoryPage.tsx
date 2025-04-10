@@ -1,6 +1,7 @@
 import ExpenseCategoryForm, {
   Category,
 } from "@/components/expenses/ExpenseCategoryForm";
+import Loader from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,6 +28,7 @@ export default function ExpenseCategoryPage() {
   const [selectedCategory, setSelectedCategory] = useState<
     Category | undefined
   >(undefined);
+  const [loading, setLoading] = useState(true);
 
   const axiosPrivate = useAxiosPrivate();
 
@@ -36,8 +38,14 @@ export default function ExpenseCategoryPage() {
 
   useEffect(() => {
     (async () => {
-      const response = await axiosPrivate.get(ApiPaths.expenseCategory);
-      setCategories(response.data.data);
+      try {
+        const response = await axiosPrivate.get(ApiPaths.expenseCategory);
+        setCategories(response.data.data);
+      } catch (error) {
+        console.error({ error });
+      } finally {
+        setLoading(false);
+      }
     })();
   }, [reload, axiosPrivate]);
 
@@ -60,7 +68,9 @@ export default function ExpenseCategoryPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {categories.length === 0 ? (
+              {loading ? (
+                <Loader />
+              ) : categories.length === 0 ? (
                 <div className="text-center py-10">
                   <p className="text-muted-foreground">
                     No hay categorías disponibles.
