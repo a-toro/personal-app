@@ -1,3 +1,6 @@
+import ExpenseCategoryForm, {
+  Category,
+} from "@/components/expenses/ExpenseCategoryForm";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -6,8 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
@@ -16,68 +17,39 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Pencil, Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useAxiosPrivate } from "@/hooks/useAxiosPrivate";
+import { ApiPaths } from "@/lib/routerPaths";
+import { Pencil, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function ExpenseCategoryPage() {
-  const [categories, setCategories] = useState([
-    {
-      id: "1",
-      name: "ElectrÃ³nica",
-      description: "Productos electrÃ³nicos y gadgets",
-    },
-    { id: "2", name: "Ropa", description: "Todo tipo de prendas de vestir" },
-    {
-      id: "3",
-      name: "Hogar",
-      description: "ArtÃ­culos para el hogar y decoraciÃ³n",
-    },
-  ]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<
+    Category | undefined
+  >(undefined);
+
+  const axiosPrivate = useAxiosPrivate();
+
+  const [reload, setReload] = useState(false);
+
+  const onReload = () => setReload((prev) => !prev);
+
+  useEffect(() => {
+    (async () => {
+      const response = await axiosPrivate.get(ApiPaths.expenseCategory);
+      setCategories(response.data.data);
+    })();
+  }, [reload, axiosPrivate]);
+
   return (
     <div className="container">
       <h1 className="text-2xl font-bold mb-6">Gestionar categorias</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <section className="md:col-span-1">
-          <Card>
-            <CardHeader>
-              <CardTitle>Formulario de categorias</CardTitle>
-              <CardDescription>Crea o modifica tus categorias</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form>
-                <div className="space-y-2">
-                  <Label htmlFor="name">Nombre</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    //   value={formValues.name}
-                    //   onChange={handleInputChange}
-                    placeholder="Nombre de la categoría"
-                    required
-                  />
-                </div>
-
-                <div className="flex justify-between pt-2">
-                  {/* {editingCategory ? ( */}
-                  {/* <>
-                    <Button type="button" variant="outline" onClick={resetForm}>
-                      Cancelar
-                    </Button>
-                    <Button type="submit">
-                      <Save className="mr-2 h-4 w-4" />
-                      Guardar Cambios
-                    </Button>
-                  </>
-                ) : ( */}
-                  <Button type="submit" className="w-full">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Crear Categoría
-                  </Button>
-                  {/* )} */}
-                </div>
-              </form>
-            </CardContent>
-          </Card>
+          <ExpenseCategoryForm
+            onReload={onReload}
+            category={selectedCategory}
+          />
         </section>
         <section className="md:col-span-2">
           <Card>
@@ -100,7 +72,6 @@ export default function ExpenseCategoryPage() {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Nombre</TableHead>
-                        <TableHead>Descripción</TableHead>
                         <TableHead className="text-right">Acciones</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -110,13 +81,17 @@ export default function ExpenseCategoryPage() {
                           <TableCell className="font-medium">
                             {category.name}
                           </TableCell>
-                          <TableCell>{category.description}</TableCell>
                           <TableCell className="text-right">
                             <div className="flex justify-end space-x-2">
                               <Button
                                 variant="outline"
                                 size="icon"
                                 // onClick={() => selectCategoryToEdit(category)}
+                                onClick={() =>
+                                  setSelectedCategory((prev) =>
+                                    prev ? { ...prev, ...category } : category
+                                  )
+                                }
                               >
                                 <Pencil className="h-4 w-4" />
                                 <span className="sr-only">Editar</span>
