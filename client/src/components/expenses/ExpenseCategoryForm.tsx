@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -15,12 +15,13 @@ import { useAxiosPrivate } from "@/hooks/useAxiosPrivate";
 import { useSnackbar } from "notistack";
 import { AxiosError } from "axios";
 
-interface Category {
+export interface Category {
   id: string;
   name: string;
 }
 interface ExpenseCategoryFormProps {
   category?: Category;
+  onReload?: () => void;
 }
 
 interface FormState {
@@ -32,20 +33,23 @@ interface FormState {
 
 export default function ExpenseCategoryForm({
   category,
+  onReload,
 }: ExpenseCategoryFormProps) {
-  const [formData, setFormData] = useState<FormState | null>(() =>
-    category
-      ? {
-          name: {
-            value: category.name,
-            error: null,
-          },
-        }
-      : null
-  );
+  const [formData, setFormData] = useState<FormState | null>(null);
   const { enqueueSnackbar } = useSnackbar();
 
   const axiosPrivate = useAxiosPrivate();
+
+  useEffect(() => {
+    if (category) {
+      setFormData({
+        name: {
+          value: category.name,
+          error: null,
+        },
+      });
+    }
+  }, [category]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -58,6 +62,18 @@ export default function ExpenseCategoryForm({
 
           if (response.status === 201) {
             enqueueSnackbar("Registro exitoso", { variant: "success" });
+            setFormData((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    name: {
+                      ...prev.name,
+                      value: "",
+                    },
+                  }
+                : null
+            );
+            if (onReload instanceof Function) onReload();
             return;
           }
           enqueueSnackbar("Ha ocurrido un error", { variant: "error" });
@@ -73,6 +89,18 @@ export default function ExpenseCategoryForm({
 
           if (response.status === 204) {
             enqueueSnackbar("Registro actualizado", { variant: "success" });
+            setFormData((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    name: {
+                      ...prev.name,
+                      value: "",
+                    },
+                  }
+                : null
+            );
+            if (onReload instanceof Function) onReload();
             return;
           }
           enqueueSnackbar("Ha ocurrido un error", { variant: "error" });
