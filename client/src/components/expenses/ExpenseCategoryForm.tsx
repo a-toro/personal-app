@@ -22,6 +22,7 @@ export interface Category {
 interface ExpenseCategoryFormProps {
   category?: Category;
   onReload?: () => void;
+  onResetSelectedCategory?: () => void;
 }
 
 interface FormState {
@@ -34,6 +35,7 @@ interface FormState {
 export default function ExpenseCategoryForm({
   category,
   onReload,
+  onResetSelectedCategory,
 }: ExpenseCategoryFormProps) {
   const [formData, setFormData] = useState<FormState | null>(null);
   const { enqueueSnackbar } = useSnackbar();
@@ -74,6 +76,8 @@ export default function ExpenseCategoryForm({
                 : null
             );
             if (onReload instanceof Function) onReload();
+            if (onResetSelectedCategory instanceof Function)
+              onResetSelectedCategory();
             return;
           }
           enqueueSnackbar("Ha ocurrido un error", { variant: "error" });
@@ -101,6 +105,8 @@ export default function ExpenseCategoryForm({
                 : null
             );
             if (onReload instanceof Function) onReload();
+            if (onResetSelectedCategory instanceof Function)
+              onResetSelectedCategory();
             return;
           }
           enqueueSnackbar("Ha ocurrido un error", { variant: "error" });

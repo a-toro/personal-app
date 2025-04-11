@@ -26,6 +26,8 @@ export default function ExpenseCategoryPage() {
 
   const [reload, setReload] = useState(false);
 
+  const onResetSelectedCategory = () => setSelectedCategory(undefined);
+
   const onReload = () => setReload((prev) => !prev);
 
   useEffect(() => {
@@ -49,6 +51,7 @@ export default function ExpenseCategoryPage() {
           <ExpenseCategoryForm
             onReload={onReload}
             category={selectedCategory}
+            onResetSelectedCategory={onResetSelectedCategory}
           />
         </section>
         <section className="md:col-span-2">
