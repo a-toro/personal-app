@@ -13,7 +13,7 @@ import {
 
 import { useAxiosPrivate } from "@/hooks/useAxiosPrivate";
 import { ApiPaths } from "@/lib/routerPaths";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function ExpenseCategoryPage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -21,6 +21,8 @@ export default function ExpenseCategoryPage() {
     Category | undefined
   >(undefined);
   const [loading, setLoading] = useState(true);
+
+  const inputCatagoryRef = useRef<HTMLInputElement>(null);
 
   const axiosPrivate = useAxiosPrivate();
 
@@ -52,6 +54,7 @@ export default function ExpenseCategoryPage() {
             onReload={onReload}
             category={selectedCategory}
             onResetSelectedCategory={onResetSelectedCategory}
+            inputCategoryRef={inputCatagoryRef}
           />
         </section>
         <section className="md:col-span-2">
@@ -77,6 +80,7 @@ export default function ExpenseCategoryPage() {
                     categories={categories}
                     setSelectedCategory={setSelectedCategory}
                     onReload={onReload}
+                    inputCategoryRef={inputCatagoryRef}
                   />
                 </div>
               )}

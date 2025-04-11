@@ -23,6 +23,7 @@ interface ExpenseCategoryFormProps {
   category?: Category;
   onReload?: () => void;
   onResetSelectedCategory?: () => void;
+  inputCategoryRef: React.RefObject<HTMLInputElement | null>;
 }
 
 interface FormState {
@@ -36,6 +37,7 @@ export default function ExpenseCategoryForm({
   category,
   onReload,
   onResetSelectedCategory,
+  inputCategoryRef,
 }: ExpenseCategoryFormProps) {
   const [formData, setFormData] = useState<FormState | null>(null);
   const { enqueueSnackbar } = useSnackbar();
@@ -148,6 +150,7 @@ export default function ExpenseCategoryForm({
               value={formData?.name.value}
               onChange={handleOnChange}
               placeholder="Nombre de la categoría"
+              ref={inputCategoryRef}
               // required
             />
           </div>

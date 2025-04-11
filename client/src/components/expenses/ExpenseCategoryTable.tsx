@@ -18,12 +18,14 @@ interface ExpenseCategoryTableProps {
     React.SetStateAction<Category | undefined>
   >;
   onReload?: () => void;
+  inputCategoryRef: React.RefObject<HTMLInputElement | null>;
 }
 
 export function ExpenseCategoryTable({
   categories,
   setSelectedCategory,
   onReload,
+  inputCategoryRef,
 }: ExpenseCategoryTableProps) {
   return (
     <Table>
@@ -43,16 +45,20 @@ export function ExpenseCategoryTable({
                   variant="outline"
                   size="icon"
                   // onClick={() => selectCategoryToEdit(category)}
-                  onClick={() =>
+                  onClick={() => {
                     setSelectedCategory((prev) =>
                       prev ? { ...prev, ...category } : category
-                    )
-                  }
+                    );
+                    inputCategoryRef.current?.focus();
+                  }}
                 >
                   <Pencil className="h-4 w-4" />
                   <span className="sr-only">Editar</span>
                 </Button>
-                <ExpenseCategoryDeleteButton category={category} onReload={onReload} />
+                <ExpenseCategoryDeleteButton
+                  category={category}
+                  onReload={onReload}
+                />
               </div>
             </TableCell>
           </TableRow>
