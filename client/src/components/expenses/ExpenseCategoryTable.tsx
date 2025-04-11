@@ -8,19 +8,22 @@ import {
   TableRow,
 } from "../ui/table";
 import { Button } from "../ui/button";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { Category } from "./ExpenseCategoryForm";
+import ExpenseCategoryDeleteButton from "./ExpenseCategoryDeleteButton";
 
 interface ExpenseCategoryTableProps {
   categories?: Category[];
   setSelectedCategory: React.Dispatch<
     React.SetStateAction<Category | undefined>
   >;
+  onReload?: () => void;
 }
 
 export function ExpenseCategoryTable({
   categories,
   setSelectedCategory,
+  onReload,
 }: ExpenseCategoryTableProps) {
   return (
     <Table>
@@ -49,15 +52,7 @@ export function ExpenseCategoryTable({
                   <Pencil className="h-4 w-4" />
                   <span className="sr-only">Editar</span>
                 </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="text-destructive"
-                  //   onClick={() => handleDeleteCategory(category.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                  <span className="sr-only">Eliminar</span>
-                </Button>
+                <ExpenseCategoryDeleteButton category={category} onReload={onReload} />
               </div>
             </TableCell>
           </TableRow>

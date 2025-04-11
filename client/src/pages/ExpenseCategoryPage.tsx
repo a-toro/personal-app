@@ -73,6 +73,7 @@ export default function ExpenseCategoryPage() {
                   <ExpenseCategoryTable
                     categories={categories}
                     setSelectedCategory={setSelectedCategory}
+                    onReload={onReload}
                   />
                 </div>
               )}
