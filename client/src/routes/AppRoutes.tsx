@@ -6,6 +6,7 @@ import { ROLES } from "@/lib/constants";
 import Home from "@/components/Home";
 import { ClientPaths } from "@/lib/routerPaths";
 import ExpenseCategoryPage from "@/pages/ExpenseCategoryPage";
+import ExpensePage from "@/pages/ExpensePage";
 // import MainLayout from "@/layouts/Layout";
 
 const AuthPage = lazy(() => import("@/pages/AuthPage"));
@@ -24,7 +25,8 @@ export default function AppRoutes() {
             path={ClientPaths.expenseCategory}
             index
             element={<ExpenseCategoryPage />}
-          ></Route>
+          />
+          <Route path={ClientPaths.expenses} index element={<ExpensePage />} />
         </Route>
         <Route
           path="*"
