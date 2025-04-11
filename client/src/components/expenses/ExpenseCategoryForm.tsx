@@ -85,7 +85,7 @@ export default function ExpenseCategoryForm({
           enqueueSnackbar("Ha ocurrido un error", { variant: "error" });
         }
       } else {
-        if (formData?.name?.value) {
+        if (formData?.name?.value && category.name !== formData.name.value) {
           const response = await axiosPrivate.put(
             `${ApiPaths.expenseCategory}/${category.id}`,
             {
