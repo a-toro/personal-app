@@ -12,6 +12,7 @@ import {
 import prisma from "../lib/prisma";
 import bcryptjs from "bcryptjs";
 import { EnvConfig } from "../lib/env";
+import { hassPassword } from "../lib/utils";
 
 export const authRouter = express.Router();
 
@@ -133,16 +134,13 @@ authRouter.post(
         });
       }
 
-      const hashPassword = await bcryptjs.hash(
-        data!.password,
-        EnvConfig.saltRounds
-      );
+      const hashedPassword = await hassPassword(data!.password);
 
       const newUser = await prisma.user.create({
         data: {
           email: data!.email,
           name: data!.name,
-          password: hashPassword,
+          password: hashedPassword,
           status: true,
         },
         select: {

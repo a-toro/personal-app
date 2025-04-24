@@ -2,6 +2,8 @@ import { PrismaClient, Role } from "@prisma/client";
 import * as dotenv from "dotenv";
 import path from "path";
 
+import { hassPassword } from "../src/lib/utils";
+
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 
@@ -11,7 +13,7 @@ async function main() {
         data: {
             name: "William Toro",
             email: process.env.FIRST_ADMIN_EMAIL as string,
-            password: process.env.FIRST_ADMIN_PASSWORD as string,
+            password: await hassPassword(process.env.FIRST_ADMIN_PASSWORD as string),
             role: Role.ADMIN
         }
     });
