@@ -9,8 +9,8 @@ export default function MainLayout() {
       <div className="w-screen h-screen overflow-x-hidden flex flex-col p-5">
         <div className="flex flex-row flex-1">
           <AppSidebar />
-          <SidebarTrigger />
-          <div className="w-full flex">
+          <div className="w-full flex flex-col">
+            <SidebarTrigger />
             <main className="p-1 flex flex-col flex-1">
               <Outlet />
             </main>
