@@ -5,9 +5,9 @@ import { CreateExpenseDto, UpdateExpenseDto } from "./expense-dto";
 
 export const expenseRouter = express.Router();
 
-expenseRouter.get("/expenses", getExpenses);
+expenseRouter.get("", getExpenses);
 expenseRouter.get("/expenses/:expenseId", getExpenseById);
-expenseRouter.post("/expenses", createExpense);
+expenseRouter.post("", createExpense);
 expenseRouter.put("/expenses/:expenseId", updateExpense);
 expenseRouter.delete("/expenses/:expenseId", deleteExpense);
 
@@ -19,9 +19,27 @@ export async function getExpenses(
   try {
     const expenses = await prisma.expense.findMany({
       where: { userId: req.user?.id },
+      include: {
+        ExpenseCategory: {
+          select: {
+            name: true,
+            id: true,
+          },
+        },
+      },
     });
+
+    const dtoExpense = expenses.map((expense) => ({
+      id: expense.id,
+      date: expense.date?.toISOString()?.split("T")?.[0] || null,
+      description: expense.description,
+      amount: expense.amount,
+      categoryName: expense.ExpenseCategory?.name || null,
+      categoryId: expense.ExpenseCategory?.id || null,
+    }));
+
     return res.status(200).json({
-      data: expenses,
+      data: dtoExpense,
     });
   } catch (error) {
     next(error);
